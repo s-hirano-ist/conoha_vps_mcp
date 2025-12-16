@@ -1,0 +1,31 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"entryPoints": [
+		"./src/index.ts"
+	],
+	"out": "reports/docs",
+	"tsconfig": "./tsconfig.json",
+	"name": "ConoHa VPS MCP Server API Documentation",
+	"readme": "./README.md",
+	"includeVersion": true,
+	"excludePrivate": true,
+	"excludeProtected": false,
+	"excludeInternal": true,
+	"exclude": [
+		"**/*.test.ts",
+		"**/node_modules/**"
+	],
+	"categorizeByGroup": true,
+	"sort": [
+		"source-order"
+	],
+	"navigation": {
+		"includeCategories": true,
+		"includeGroups": true
+	},
+	"validation": {
+		"notExported": true,
+		"invalidLink": true,
+		"notDocumented": false
+	}
+}

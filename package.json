@@ -51,7 +51,9 @@
 		"biome:fix": "biome check --write .",
 		"test": "vitest run --coverage",
 		"generate:notice": "node scripts/generate-notice.js",
-		"inspector": "npx @modelcontextprotocol/inspector"
+		"inspector": "npx @modelcontextprotocol/inspector",
+		"docs:build": "typedoc",
+		"docs:watch": "typedoc --watch"
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.24.3",
@@ -64,6 +66,7 @@
 		"@vitest/coverage-v8": "4.0.15",
 		"esbuild": "0.27.1",
 		"tsx": "4.21.0",
+		"typedoc": "0.28.15",
 		"typescript": "5.9.3",
 		"vitest": "4.0.15"
 	},

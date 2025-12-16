@@ -1,3 +1,22 @@
+/**
+ * ConoHa VPS MCP Server
+ *
+ * @remarks
+ * Model Context Protocol (MCP) サーバーのエントリポイント。
+ * AIアシスタントにConoHa VPS OpenStack APIへのアクセスを提供します。
+ *
+ * 提供するMCPツール:
+ * - `fetch_url` - URL取得
+ * - `encode_base64` - Base64エンコード
+ * - `conoha_get` - ConoHa API取得（一覧取得）
+ * - `conoha_get_by_param` - ConoHa API取得（パラメータ指定）
+ * - `conoha_post` - ConoHa APIリソース作成
+ * - `conoha_post_put_by_param` - ConoHa API更新・操作
+ * - `conoha_delete_by_param` - ConoHa APIリソース削除
+ *
+ * @packageDocumentation
+ */
+
 import { Buffer } from "node:buffer";
 import { createRequire } from "node:module";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";

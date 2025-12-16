@@ -1,3 +1,13 @@
+/**
+ * MCPツールのルーティングテーブル
+ *
+ * @remarks
+ * 各MCPツールのパスとハンドラー関数のマッピングを定義します。
+ * ツールはGET、POST、PUT、DELETEの各HTTPメソッドに対応しています。
+ *
+ * @packageDocumentation
+ */
+
 import {
 	createCompute,
 	createComputeByParam,
@@ -29,6 +39,13 @@ import type {
 	ConoHaPostPutByParamPaths,
 } from "./types.js";
 
+/**
+ * ConoHa GET APIのハンドラーマッピング
+ *
+ * @remarks
+ * パスをキーとし、対応するハンドラー関数を値とするレコードです。
+ * サーバー一覧、フレーバー一覧、ボリューム一覧などの取得処理を提供します。
+ */
 export const conohaGetHandlers: Record<ConoHaGetPaths, () => Promise<string>> =
 	{
 		"/servers/detail": () => getCompute("/servers/detail"),
@@ -44,6 +61,12 @@ export const conohaGetHandlers: Record<ConoHaGetPaths, () => Promise<string>> =
 		"/startup-scripts": () => getCompute("/startup-scripts"),
 	};
 
+/**
+ * パラメータ付きConoHa GET APIのハンドラーマッピング
+ *
+ * @remarks
+ * サーバーIDなどのパラメータを受け取り、特定リソースの詳細を取得します。
+ */
 export const conohaGetByParamHandlers: Record<
 	ConoHaGetByParamsPaths,
 	(param: string) => Promise<string>
@@ -59,6 +82,12 @@ export const conohaGetByParamHandlers: Record<
 		getNetworkByParam("/v2.0/security-group-rules", param),
 };
 
+/**
+ * ConoHa POST APIのハンドラーマッピング
+ *
+ * @remarks
+ * リソース作成用のハンドラーです。サーバー、ボリューム、セキュリティグループなどを作成します。
+ */
 export const conohaPostHandlers: Record<
 	ConoHaPostPaths,
 	(requestBody: any) => Promise<string>
@@ -72,6 +101,12 @@ export const conohaPostHandlers: Record<
 		createNetwork("/v2.0/security-group-rules", requestBody),
 };
 
+/**
+ * パラメータ付きConoHa POST/PUT APIのハンドラーマッピング
+ *
+ * @remarks
+ * リソースの更新や操作用のハンドラーです。サーバーの起動/停止、ボリューム更新などを実行します。
+ */
 export const conohaPostPutByParamHandlers: Record<
 	ConoHaPostPutByParamPaths,
 	(param: string, requestBody: any) => Promise<string>
@@ -90,6 +125,12 @@ export const conohaPostPutByParamHandlers: Record<
 		updateVolumeByParam("/volumes", param, requestBody),
 };
 
+/**
+ * ConoHa DELETE APIのハンドラーマッピング
+ *
+ * @remarks
+ * リソース削除用のハンドラーです。サーバー、ボリューム、セキュリティグループなどを削除します。
+ */
 export const conohaDeleteByParamHandlers: Record<
 	ConoHaDeleteByParamPaths,
 	(param: string) => Promise<string>

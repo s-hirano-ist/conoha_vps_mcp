@@ -1,3 +1,12 @@
+/**
+ * OpenStack Block Storage (Cinder) APIクライアント
+ *
+ * @remarks
+ * ブロックストレージボリュームの作成、取得、更新、削除を行うAPIクライアントです。
+ *
+ * @packageDocumentation
+ */
+
 import type { JsonObject } from "../../../types.js";
 import { executeOpenstackApi } from "../common/openstack-client.js";
 import { formatResponse } from "../common/response-formatter.js";
@@ -7,6 +16,12 @@ const TENANT_ID = process.env.OPENSTACK_TENANT_ID;
 
 const OPENSTACK_VOLUME_TENANT_BASE_URL = `${OPENSTACK_VOLUME_BASE_URL}/${TENANT_ID}`;
 
+/**
+ * ボリューム情報を取得
+ *
+ * @param path - APIパス（例: "/volumes/detail", "/types"）
+ * @returns フォーマット済みJSONレスポンス
+ */
 export async function getVolume(path: string) {
 	const response = await executeOpenstackApi(
 		"GET",
@@ -16,6 +31,13 @@ export async function getVolume(path: string) {
 	return await formatResponse(response);
 }
 
+/**
+ * ボリュームを作成
+ *
+ * @param path - APIパス（"/volumes"）
+ * @param requestBody - ボリューム作成設定
+ * @returns 作成されたボリューム情報を含むJSONレスポンス
+ */
 export async function createVolume(path: string, requestBody: JsonObject) {
 	const response = await executeOpenstackApi(
 		"POST",
@@ -26,6 +48,14 @@ export async function createVolume(path: string, requestBody: JsonObject) {
 	return await formatResponse(response);
 }
 
+/**
+ * ボリュームを更新
+ *
+ * @param path - APIパス（"/volumes"）
+ * @param param - ボリュームID
+ * @param requestBody - 更新内容
+ * @returns 更新されたボリューム情報を含むJSONレスポンス
+ */
 export async function updateVolumeByParam(
 	path: string,
 	param: string,
@@ -40,6 +70,13 @@ export async function updateVolumeByParam(
 	return await formatResponse(response);
 }
 
+/**
+ * ボリュームを削除
+ *
+ * @param path - APIパス（"/volumes"）
+ * @param param - ボリュームID
+ * @returns 削除結果を含むJSONレスポンス
+ */
 export async function deleteVolumeByParam(path: string, param: string) {
 	const response = await executeOpenstackApi(
 		"DELETE",
