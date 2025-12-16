@@ -1,8 +1,9 @@
 {
 	"$schema": "https://typedoc.org/schema.json",
 	"entryPoints": [
-		"./src/index.ts"
+		"./src/**/*.ts"
 	],
+	"entryPointStrategy": "expand",
 	"out": "reports/docs",
 	"tsconfig": "./tsconfig.json",
 	"name": "ConoHa VPS MCP Server API Documentation",
