@@ -8,7 +8,7 @@
  * @packageDocumentation
  */
 
-import { OPENSTACK_IDENTITY_BASE_URL } from "../constants.js";
+import { OPENSTACK_IDENTITY_BASE_URL, USER_AGENT } from "../constants.js";
 
 /**
  * OpenStack認証ヘッダーを取得する内部関数
@@ -28,7 +28,7 @@ async function fetchOpenstackAuthHeaders(path: string) {
 
 	const response = await fetch(`${OPENSTACK_IDENTITY_BASE_URL}${path}`, {
 		method: "POST",
-		headers: { Accept: "application/json" },
+		headers: { Accept: "application/json", "User-Agent": USER_AGENT },
 		body: JSON.stringify({
 			auth: {
 				identity: {

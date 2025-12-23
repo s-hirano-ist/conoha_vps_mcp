@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { generateApiToken } from "./generate-api-token";
 
+vi.mock("../constants", () => ({
+	OPENSTACK_IDENTITY_BASE_URL: "https://identity.c3j1.conoha.io/v3",
+	USER_AGENT: "conoha-vps-mcp/test",
+}));
+
 // fetch のモック
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
@@ -39,7 +44,10 @@ describe("generate-api-token", () => {
 				"https://identity.c3j1.conoha.io/v3/auth/tokens",
 				{
 					method: "POST",
-					headers: { Accept: "application/json" },
+					headers: {
+						Accept: "application/json",
+						"User-Agent": "conoha-vps-mcp/test",
+					},
 					body: JSON.stringify({
 						auth: {
 							identity: {
@@ -178,7 +186,10 @@ describe("generate-api-token", () => {
 
 			const callArgs = mockFetch.mock.calls[0];
 			expect(callArgs[1].method).toBe("POST");
-			expect(callArgs[1].headers).toEqual({ Accept: "application/json" });
+			expect(callArgs[1].headers).toEqual({
+				Accept: "application/json",
+				"User-Agent": "conoha-vps-mcp/test",
+			});
 		});
 
 		it("正しいエンドポイントURL（https://identity.c3j1.conoha.io/v3/auth/tokens）で認証API（/v3/auth/tokens）にAPIトークン発行リクエストを送信できる", async () => {

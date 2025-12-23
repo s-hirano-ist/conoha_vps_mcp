@@ -60,6 +60,7 @@ import {
 
 const require = createRequire(import.meta.url);
 const packageJson = require("../package.json");
+const USER_AGENT = `conoha-vps-mcp/${packageJson.version}`;
 const server = new McpServer({
 	name: "ConoHa VPS MCP",
 	version: packageJson.version,
@@ -79,7 +80,9 @@ server.registerTool(
 	},
 	async ({ url }) => {
 		try {
-			const response = await fetch(url);
+			const response = await fetch(url, {
+				headers: { "User-Agent": USER_AGENT },
+			});
 			if (!response.ok) {
 				throw new Error(
 					`Failed to fetch: ${response.status} ${response.statusText}`,

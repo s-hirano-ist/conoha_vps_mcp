@@ -11,6 +11,10 @@ vi.mock("./generate-api-token", () => ({
 	generateApiToken: vi.fn(),
 }));
 
+vi.mock("../constants", () => ({
+	USER_AGENT: "conoha-vps-mcp/test",
+}));
+
 // fetch のモック
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
@@ -59,6 +63,7 @@ describe("openstack-client", () => {
 						method: "GET",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 						},
 					},
@@ -66,7 +71,7 @@ describe("openstack-client", () => {
 				expect(mockFormatResponse).toHaveBeenCalledWith(mockResponse);
 			});
 
-			it("API（/servers/server-id-123）へのパスパラメータを含むGETリクエストでレスポンスを受け取った場合に、正しいURL（https://compute.example.com/servers/server-id-123）とHTTPヘッダー（{Accept: application/json, X-Auth-Token}）でAPIリクエストを送信できる", async () => {
+			it("API（/servers/server-id-123）へのパスパラメータを含むGETリクエストでレスポンスを受け取った場合に、正しいURL（https://compute.example.com/servers/server-id-123）とHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token}）でAPIリクエストを送信できる", async () => {
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
 
@@ -78,13 +83,14 @@ describe("openstack-client", () => {
 						method: "GET",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 						},
 					},
 				);
 			});
 
-			it("API（/servers?limit=10&marker=abc）へのクエリパラメータを含むGETリクエストでレスポンスを受け取った場合に、正しいURL（https://compute.example.com/servers?limit=10&marker=abc）とHTTPヘッダー（{Accept: application/json, X-Auth-Token}）でAPIリクエストを送信できる", async () => {
+			it("API（/servers?limit=10&marker=abc）へのクエリパラメータを含むGETリクエストでレスポンスを受け取った場合に、正しいURL（https://compute.example.com/servers?limit=10&marker=abc）とHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token}）でAPIリクエストを送信できる", async () => {
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
 
@@ -100,6 +106,7 @@ describe("openstack-client", () => {
 						method: "GET",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 						},
 					},
@@ -108,7 +115,7 @@ describe("openstack-client", () => {
 		});
 
 		describe("DELETE requests", () => {
-			it("API（/servers/server-id-123）へのDELETEリクエストでサーバー削除レスポンスを受け取った場合に、正しいURL（https://compute.example.com/servers/server-id-123）とHTTPヘッダー（{Accept: application/json, X-Auth-Token}）でAPIリクエストを送信し、'{status: number, statusText: string, body: json}'形式に正しくフォーマットできる", async () => {
+			it("API（/servers/server-id-123）へのDELETEリクエストでサーバー削除レスポンスを受け取った場合に、正しいURL（https://compute.example.com/servers/server-id-123）とHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token}）でAPIリクエストを送信し、'{status: number, statusText: string, body: json}'形式に正しくフォーマットできる", async () => {
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
 
@@ -128,6 +135,7 @@ describe("openstack-client", () => {
 						method: "DELETE",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 						},
 					},
@@ -137,7 +145,7 @@ describe("openstack-client", () => {
 		});
 
 		describe("POST requests", () => {
-			it("API（/servers）へのサーバー作成情報を含むPOSTリクエストでサーバー作成レスポンスを受け取った場合に、正しいJSONボディとHTTPヘッダー（{Accept: application/json, X-Auth-Token, Content-Type: application/json}）でAPIを呼び出しレスポンスをフォーマットできる", async () => {
+			it("API（/servers）へのサーバー作成情報を含むPOSTリクエストでサーバー作成レスポンスを受け取った場合に、正しいJSONボディとHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token, Content-Type: application/json}）でAPIを呼び出しレスポンスをフォーマットできる", async () => {
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
 
@@ -166,6 +174,7 @@ describe("openstack-client", () => {
 						method: "POST",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 							"Content-Type": "application/json",
 						},
@@ -175,7 +184,7 @@ describe("openstack-client", () => {
 				expect(mockFormatResponse).toHaveBeenCalledWith(mockResponse);
 			});
 
-			it("API（/servers）への複雑なサーバー作成情報（ネットワーク・メタデータ・セキュリティグループ）を含むPOSTリクエストでレスポンスを受け取った場合に、正しいJSONボディとHTTPヘッダー（{Accept: application/json, X-Auth-Token, Content-Type: application/json}）でAPIリクエストを送信できる", async () => {
+			it("API（/servers）への複雑なサーバー作成情報（ネットワーク・メタデータ・セキュリティグループ）を含むPOSTリクエストでレスポンスを受け取った場合に、正しいJSONボディとHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token, Content-Type: application/json}）でAPIリクエストを送信できる", async () => {
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
 
@@ -201,6 +210,7 @@ describe("openstack-client", () => {
 						method: "POST",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 							"Content-Type": "application/json",
 						},
@@ -211,7 +221,7 @@ describe("openstack-client", () => {
 		});
 
 		describe("PUT requests", () => {
-			it("API（/servers/server-id-123）への更新情報を含むPUTリクエストでサーバー更新レスポンスを受け取った場合に、正しいJSONボディとHTTPヘッダー（{Accept: application/json, X-Auth-Token, Content-Type: application/json}）でAPIを呼び出しレスポンスをフォーマットできる", async () => {
+			it("API（/servers/server-id-123）への更新情報を含むPUTリクエストでサーバー更新レスポンスを受け取った場合に、正しいJSONボディとHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token, Content-Type: application/json}）でAPIを呼び出しレスポンスをフォーマットできる", async () => {
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
 
@@ -238,6 +248,7 @@ describe("openstack-client", () => {
 						method: "PUT",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 							"Content-Type": "application/json",
 						},
@@ -249,7 +260,7 @@ describe("openstack-client", () => {
 		});
 
 		describe("異なるベースURL", () => {
-			it("API（/v2.0/networks）で異なるベースURLでGETリクエストを送信した場合に、正しいURL（https://network.example.com/v2.0/networks）とヘッダー（{Accept: application/json, X-Auth-Token}）でネットワークAPIを呼び出すことができる", async () => {
+			it("API（/v2.0/networks）で異なるベースURLでGETリクエストを送信した場合に、正しいURL（https://network.example.com/v2.0/networks）とヘッダー（{Accept: application/json, User-Agent, X-Auth-Token}）でネットワークAPIを呼び出すことができる", async () => {
 				const networkBaseUrl = "https://network.example.com";
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
@@ -262,6 +273,7 @@ describe("openstack-client", () => {
 						method: "GET",
 						headers: expect.objectContaining({
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": apiToken,
 						}),
 					}),
@@ -363,7 +375,7 @@ describe("openstack-client", () => {
 		});
 
 		describe("APIトークンの処理", () => {
-			it("API（/servers）へのGETリクエストでAPIトークンが空文字の場合でも、正しいHTTPヘッダー（{Accept: application/json, X-Auth-Token: 空文字}）でAPIリクエストを送信できる", async () => {
+			it("API（/servers）へのGETリクエストでAPIトークンが空文字の場合でも、正しいHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token: 空文字}）でAPIリクエストを送信できる", async () => {
 				mockGenerateApiToken.mockResolvedValueOnce("");
 				const mockResponse = new Response();
 				mockFetch.mockResolvedValueOnce(mockResponse);
@@ -376,13 +388,14 @@ describe("openstack-client", () => {
 						method: "GET",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": "",
 						},
 					},
 				);
 			});
 
-			it("API（/servers）へのGETリクエストでAPIトークンが長い文字列（500文字）の場合でも、正しいHTTPヘッダー（{Accept: application/json, X-Auth-Token: 長いトークン}）でAPIリクエストを送信できる", async () => {
+			it("API（/servers）へのGETリクエストでAPIトークンが長い文字列（500文字）の場合でも、正しいHTTPヘッダー（{Accept: application/json, User-Agent, X-Auth-Token: 長いトークン}）でAPIリクエストを送信できる", async () => {
 				const longToken = "a".repeat(500);
 				mockGenerateApiToken.mockResolvedValueOnce(longToken);
 				const mockResponse = new Response();
@@ -396,6 +409,7 @@ describe("openstack-client", () => {
 						method: "GET",
 						headers: {
 							Accept: "application/json",
+							"User-Agent": "conoha-vps-mcp/test",
 							"X-Auth-Token": longToken,
 						},
 					},

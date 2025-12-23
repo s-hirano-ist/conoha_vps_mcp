@@ -9,6 +9,7 @@
  */
 
 import type { HttpMethod, JsonObject } from "../../../types.js";
+import { USER_AGENT } from "../constants.js";
 import { generateApiToken } from "./generate-api-token.js";
 
 /**
@@ -78,6 +79,7 @@ export async function executeOpenstackApi(
 		method,
 		headers: {
 			Accept: "application/json",
+			"User-Agent": USER_AGENT,
 			"X-Auth-Token": apiToken,
 			...(body ? { "Content-Type": "application/json" } : {}),
 		},

@@ -7,6 +7,16 @@
  * @packageDocumentation
  */
 
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const packageJson = require("../../../package.json");
+
+/**
+ * User-Agent ヘッダー値
+ */
+export const USER_AGENT = `conoha-vps-mcp/${packageJson.version}`;
+
 /**
  * Identity (Keystone) API ベースURL
  */
