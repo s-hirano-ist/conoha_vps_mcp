@@ -34,9 +34,9 @@ jobs:
       # 3) Node セットアップ
       - name: Setup Node.js
         if: success()
-        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
         with:
-          node-version: "24.12.0"
+          node-version: "24.13.0"
           registry-url: "https://registry.npmjs.org/"
 
       # 4) npm 11.5.1以降が必要 TODO: delete when nodejs updates to v24
