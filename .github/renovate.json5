@@ -85,6 +85,7 @@
     {
       matchPackageNames: ['@types/node'],
       allowedVersions: '<=20',
+      rangeStrategy: 'replace',
     },
     {
       matchManagers: [
