@@ -26,6 +26,18 @@ import {
 	updateNetworkByParam,
 } from "./features/openstack/network/network-client.js";
 import {
+	deleteStorageContainer,
+	deleteStorageObject,
+	getStorageAccountInfo,
+	getStorageContainerInfo,
+	getStorageContainerList,
+	getStorageObjectInfo,
+	getStorageObjectList,
+	setPostStorageMetadata,
+	setPutStorageMetadata,
+	uploadStorageObject,
+} from "./features/openstack/storage/storage-client.js";
+import {
 	createVolume,
 	deleteVolumeByParam,
 	getVolume,
@@ -35,8 +47,11 @@ import type {
 	ConoHaDeleteByParamPaths,
 	ConoHaGetByParamsPaths,
 	ConoHaGetPaths,
+	ConoHaHeadPaths,
 	ConoHaPostPaths,
+	ConoHaPostPutByParamByHeaderparamPaths,
 	ConoHaPostPutByParamPaths,
+	ConoHaPostPutPaths,
 } from "./types.js";
 
 /**
@@ -46,20 +61,27 @@ import type {
  * パスをキーとし、対応するハンドラー関数を値とするレコードです。
  * サーバー一覧、フレーバー一覧、ボリューム一覧などの取得処理を提供します。
  */
-export const conohaGetHandlers: Record<ConoHaGetPaths, () => Promise<string>> =
-	{
-		"/servers/detail": () => getCompute("/servers/detail"),
-		"/flavors/detail": () => getFlavor("/flavors/detail"),
-		"/os-keypairs": () => getCompute("/os-keypairs"),
-		"/types": () => getVolume("/types"),
-		"/volumes/detail": () => getVolume("/volumes/detail"),
-		"/v2/images?limit=200": () => getImage("/v2/images?limit=200"),
-		"/v2.0/security-groups": () => getSecurityGroup("/v2.0/security-groups"),
-		"/v2.0/security-group-rules": () =>
-			getNetwork("/v2.0/security-group-rules"),
-		"/v2.0/ports": () => getNetwork("/v2.0/ports"),
-		"/startup-scripts": () => getCompute("/startup-scripts"),
-	};
+export const conohaGetHandlers: Record<
+	ConoHaGetPaths,
+	(path?: string) => Promise<string>
+> = {
+	"/servers/detail": () => getCompute("/servers/detail"),
+	"/flavors/detail": () => getFlavor("/flavors/detail"),
+	"/os-keypairs": () => getCompute("/os-keypairs"),
+	"/types": () => getVolume("/types"),
+	"/volumes/detail": () => getVolume("/volumes/detail"),
+	"/v2/images?limit=200": () => getImage("/v2/images?limit=200"),
+	"/v2.0/security-groups": () => getSecurityGroup("/v2.0/security-groups"),
+	"/v2.0/security-group-rules": () => getNetwork("/v2.0/security-group-rules"),
+	"/v2.0/ports": () => getNetwork("/v2.0/ports"),
+	"/startup-scripts": () => getCompute("/startup-scripts"),
+	"/v1/AUTH_{tenantId}": (path) =>
+		getStorageContainerList(path || "/v1/AUTH_{tenantId}"),
+	"/v1/AUTH_{tenantId}/{container}": (path) =>
+		getStorageObjectList(path || "/v1/AUTH_{tenantId}/{container}"),
+	"/v1/AUTH_{tenantId}/{container}/{object}": (path) =>
+		getStorageObjectInfo(path || "/v1/AUTH_{tenantId}/{container}/{object}"),
+};
 
 /**
  * パラメータ付きConoHa GET APIのハンドラーマッピング
@@ -101,6 +123,19 @@ export const conohaPostHandlers: Record<
 		createNetwork("/v2.0/security-group-rules", requestBody),
 };
 
+export const conohaPostPutHandlers: Record<
+	ConoHaPostPutPaths,
+	(path: string, content?: string, contentType?: string) => Promise<string>
+> = {
+	"/v1/AUTH_{tenantId}/{container}": (path) => setPutStorageMetadata(path),
+	"/v1/AUTH_{tenantId}/{container}/{object}": (path, content, contentType) => {
+		if (content === undefined) {
+			throw new Error("content is required for object upload");
+		}
+		return uploadStorageObject(path, content, contentType);
+	},
+};
+
 /**
  * パラメータ付きConoHa POST/PUT APIのハンドラーマッピング
  *
@@ -125,11 +160,18 @@ export const conohaPostPutByParamHandlers: Record<
 		updateVolumeByParam("/volumes", param, requestBody),
 };
 
+export const conohaPostPutByHeaderparamHandlers: Record<
+	ConoHaPostPutByParamByHeaderparamPaths,
+	(path: string, headerparam: any) => Promise<string>
+> = {
+	"/v1": (path, headerparam) => setPostStorageMetadata(path, headerparam),
+};
+
 /**
  * ConoHa DELETE APIのハンドラーマッピング
  *
  * @remarks
- * リソース削除用のハンドラーです。サーバー、ボリューム、セキュリティグループなどを削除します。
+ * リソース削除用のハンドラーです。サーバー、ボリューム、セキュリティグループ、オブジェクトストレージなどを削除します。
  */
 export const conohaDeleteByParamHandlers: Record<
 	ConoHaDeleteByParamPaths,
@@ -142,4 +184,26 @@ export const conohaDeleteByParamHandlers: Record<
 	"/v2.0/security-group-rules": (param) =>
 		deleteNetworkByParam("/v2.0/security-group-rules", param),
 	"/volumes": (param) => deleteVolumeByParam("/volumes", param),
+	"/v1/AUTH_{tenantId}/{container}": (param) => deleteStorageContainer(param),
+	"/v1/AUTH_{tenantId}/{container}/{object}": (param) =>
+		deleteStorageObject(param),
+};
+
+/**
+ * ConoHa HEAD APIのハンドラーマッピング
+ *
+ * @remarks
+ * オブジェクトストレージのアカウント情報およびコンテナ詳細取得用のハンドラーです。
+ */
+export const conohaHeadHandlers: Record<
+	ConoHaHeadPaths,
+	(path: string) => Promise<string>
+> = {
+	"/v1": (path) => {
+		const pathParts = path.split("/");
+		if (pathParts.length >= 4 && pathParts[3]) {
+			return getStorageContainerInfo(path);
+		}
+		return getStorageAccountInfo(path);
+	},
 };
