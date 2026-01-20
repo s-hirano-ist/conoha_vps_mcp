@@ -21,7 +21,7 @@ BSD-2-Clause Licensed:
 
 BSD-3-Clause Licensed:
   - fast-uri (3.1.0)
-  - qs (6.14.0)
+  - qs (6.14.1)
 
 ISC Licensed:
   - inherits (2.0.4)
@@ -30,15 +30,15 @@ ISC Licensed:
   - setprototypeof (1.2.0)
   - which (2.0.2)
   - wrappy (1.0.2)
-  - zod-to-json-schema (3.25.0)
+  - zod-to-json-schema (3.25.1)
 
 MIT Licensed:
-  - @hono/node-server (1.19.7)
-  - @modelcontextprotocol/sdk (1.25.1)
+  - @hono/node-server (1.19.9)
+  - @modelcontextprotocol/sdk (1.25.2)
   - accepts (2.0.0)
   - ajv (8.17.1)
   - ajv-formats (3.0.1)
-  - body-parser (2.2.1)
+  - body-parser (2.2.2)
   - bytes (3.1.2)
   - call-bind-apply-helpers (1.0.2)
   - call-bound (1.0.4)
@@ -72,9 +72,9 @@ MIT Licensed:
   - gopd (1.2.0)
   - has-symbols (1.1.0)
   - hasown (2.0.2)
-  - hono (4.11.1)
+  - hono (4.11.4)
   - http-errors (2.0.1)
-  - iconv-lite (0.7.1)
+  - iconv-lite (0.7.2)
   - ipaddr.js (1.9.1)
   - is-promise (4.0.0)
   - jose (6.1.3)
@@ -112,6 +112,6 @@ MIT Licensed:
   - type-is (2.0.1)
   - unpipe (1.0.0)
   - vary (1.1.2)
-  - zod (4.2.1)
+  - zod (4.3.5)
 
 For the full license text of these dependencies, please refer to their respective repositories or the node_modules directory.
