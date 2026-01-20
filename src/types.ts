@@ -39,7 +39,10 @@ export type ConoHaGetPaths =
 	| "/v2.0/security-groups"
 	| "/v2.0/security-group-rules"
 	| "/v2.0/ports"
-	| "/startup-scripts";
+	| "/startup-scripts"
+	| "/v1/AUTH_{tenantId}"
+	| "/v1/AUTH_{tenantId}/{container}"
+	| "/v1/AUTH_{tenantId}/{container}/{object}";
 
 /**
  * conoha_get_by_paramツールで利用可能なAPIパス
@@ -62,6 +65,10 @@ export type ConoHaPostPaths =
 	| "/v2.0/security-groups"
 	| "/v2.0/security-group-rules";
 
+export type ConoHaPostPutPaths =
+	| "/v1/AUTH_{tenantId}/{container}"
+	| "/v1/AUTH_{tenantId}/{container}/{object}";
+
 /**
  * conoha_post_put_by_paramツールで利用可能なAPIパス
  */
@@ -73,6 +80,8 @@ export type ConoHaPostPutByParamPaths =
 	| "/v2.0/ports"
 	| "/volumes";
 
+export type ConoHaPostPutByParamByHeaderparamPaths = "/v1";
+
 /**
  * conoha_delete_by_paramツールで利用可能なAPIパス
  */
@@ -81,4 +90,11 @@ export type ConoHaDeleteByParamPaths =
 	| "/os-keypairs"
 	| "/v2.0/security-groups"
 	| "/v2.0/security-group-rules"
-	| "/volumes";
+	| "/volumes"
+	| "/v1/AUTH_{tenantId}/{container}"
+	| "/v1/AUTH_{tenantId}/{container}/{object}";
+
+/**
+ * conoha_headツールで利用可能なAPIパス
+ */
+export type ConoHaHeadPaths = "/v1";

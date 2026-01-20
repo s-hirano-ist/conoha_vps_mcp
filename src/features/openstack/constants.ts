@@ -7,10 +7,7 @@
  * @packageDocumentation
  */
 
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const packageJson = require("../../../package.json");
+import packageJson from "../../../package.json";
 
 /**
  * User-Agent ヘッダー値
@@ -42,3 +39,9 @@ export const OPENSTACK_IMAGE_BASE_URL = "https://image-service.c3j1.conoha.io";
  * Networking (Neutron) API ベースURL
  */
 export const OPENSTACK_NETWORK_BASE_URL = "https://networking.c3j1.conoha.io";
+
+/**
+ * Object Storage API ベースURL
+ */
+export const OPENSTACK_OBJECT_STORAGE_BASE_URL =
+	"https://object-storage.c3j1.conoha.io";
