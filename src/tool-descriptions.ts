@@ -262,7 +262,7 @@ export const conohaPostPutByParamByHeaderbodyDescription = `
                   
          • 契約に紐づくサーバー管理用途にのみ使用可
 
-         • Web公開のURLは"{OPENSTACK_OBJECT_STORAGE_BASE_URL}/v1/AUTH_{tenantId}/{container-name}/{object-name}"です
+         • Web公開のURLは"https://object-storage.c3j1.conoha.io/v1/AUTH_{tenantId}/{container-name}/{object-name}"です
    `;
 
 export const conohaPostPutDescription = `
