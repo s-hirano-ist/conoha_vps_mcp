@@ -79,8 +79,13 @@
       minimumReleaseAge: '2 days'
     },
     {
-      "matchDepTypes": ["engines"],
-      "enabled": false
+      matchDepTypes: ['engines'],
+      enabled: false,
+    },
+    {
+      matchPackageNames: ['@types/node'],
+      allowedVersions: '<=20',
+      rangeStrategy: 'replace',
     },
     {
       matchManagers: [

@@ -1,19 +1,32 @@
 export const conohaGetDescription = `
    JA: ConoHa の 公開 API を利用してサーバー操作を行います。
 
-         • 引数 ‘path’ でアクセス先リソースを指定
+         • 引数 'path' でアクセス先リソースを指定
 
          • 利用可能パス: 
-               /servers/detail            (サーバー一覧取得)
-               /flavors/detail            (フレーバー一覧取得)
-               /os-keypairs               (SSHキーペア一覧取得)
-               /types                     (ボリュームタイプ一覧取得)
-               /volumes/detail            (ボリューム一覧取得)
-               /v2/images?limit=200       (イメージ一覧取得)
-               /v2.0/security-groups      (セキュリティグループ一覧取得)
-               /v2.0/security-group-rules (セキュリティグループルール一覧取得)
-               /v2.0/ports                (ポート一覧取得)
-               /startup-scripts           (スタートアップスクリプト一覧取得)
+               /servers/detail                              (サーバー一覧取得)
+               /flavors/detail                              (フレーバー一覧取得)
+               /os-keypairs                                 (SSHキーペア一覧取得)
+               /types                                       (ボリュームタイプ一覧取得)
+               /volumes/detail                              (ボリューム一覧取得)
+               /v2/images?limit=200                         (イメージ一覧取得)
+               /v2.0/security-groups                        (セキュリティグループ一覧取得)
+               /v2.0/security-group-rules                   (セキュリティグループルール一覧取得)
+               /v2.0/ports                                  (ポート一覧取得)
+               /startup-scripts                             (スタートアップスクリプト一覧取得)
+               /v1/AUTH_{tenantId}                          (コンテナ一覧取得)
+               /v1/AUTH_{tenantId}/{container}              (オブジェクト一覧取得)
+               /v1/AUTH_{tenantId}/{container}/{object}     (オブジェクト詳細取得・ダウンロード)
+               
+         • オブジェクトストレージ関連パスでは、{tenantId}、{container}、{object} が実際の値に自動的に置換されます
+               - {tenantId}: 環境変数から自動取得
+               - {container}: コンテナ名を指定 (例: "/v1/AUTH_{tenantId}/mycontainer")
+               - {object}: オブジェクト名を指定 (例: "/v1/AUTH_{tenantId}/mycontainer/myfile.txt")
+               
+         • オブジェクト詳細取得・ダウンロードのレスポンス:
+               - headers: レスポンスヘッダー (content-type, content-length, etag, last-modified など)
+               - body: オブジェクトの内容 (テキストファイルはそのまま、バイナリファイルはBase64エンコード)
+               - encoding: "utf8" または "base64" (バイナリデータの場合)
                
          • 契約に紐づくサーバー管理用途にのみ使用可
    `;
@@ -223,24 +236,90 @@ export const conohaPostPutByParamDescription = `
          • 契約に紐づくサーバー管理用途にのみ使用可
    `;
 
+export const conohaPostPutByParamByHeaderbodyDescription = `
+   JA: ConoHa の 公開 API を利用してオブジェクトストレージ操作を行います。
+   
+         • inputに'path'と'headerparam'を指定
+               {  "input": {
+                     "path": <path>,
+                     "headerparam": <headerparam>
+                  }
+               }
+         • 引数 'path' でアクセス先リソースを指定（{tenantId} は環境変数から自動取得されます）
+               アカウント容量設定: "/v1/AUTH_{tenantId}"
+               コンテナのWeb公開設定: "/v1/AUTH_{tenantId}/{コンテナ名}" (例: "/v1/AUTH_{tenantId}/mycontainer")
+         • 引数 'headerparam' でリクエストヘッダーを指定
+               アカウント容量設定の場合: 
+                  {  "X-Account-Meta-Quota-Giga-Bytes": string } // アカウント全体のクォータをGB単位で指定 (100GB単位で指定。例: "100", "200", "300")
+               
+               コンテナのWeb公開設定の場合:
+                  {  "X-Container-Read": string } // コンテナの読み取り権限を設定 (例: ".r:*" で全体公開)
+
+               コンテナのWeb公開解除の場合
+                  {  "X-Container-Read;" } // コンテナの読み取り権限を解除
+                  
+         • テナントIDは環境変数 OPENSTACK_TENANT_ID から自動的に取得されます
+                  
+         • 契約に紐づくサーバー管理用途にのみ使用可
+
+         • Web公開のURLは"https://object-storage.c3j1.conoha.io/v1/AUTH_{tenantId}/{container-name}/{object-name}"です
+   `;
+
+export const conohaPostPutDescription = `
+   JA: ConoHa の 公開 API を利用してオブジェクトストレージ操作を行います。
+   
+         • 引数 'path' でアクセス先リソースを指定（{tenantId} は環境変数から自動取得されます）
+
+         • 利用可能パス: 
+               /v1/AUTH_{tenantId}/{container}              (コンテナ作成)
+               /v1/AUTH_{tenantId}/{container}/{object}     (オブジェクトアップロード)
+
+         • コンテナ作成の場合:
+               - path: コンテナのパス (例: "/v1/AUTH_{tenantId}/mycontainer")
+               - content: 不要
+
+         • オブジェクトアップロードの場合:
+               - path: オブジェクトのパス (例: "/v1/AUTH_{tenantId}/mycontainer/myfile.txt")
+               - content: アップロードするファイルの絶対パス（必須） (例: "C:\\Users\\user\\file.txt" または "/home/user/file.txt")
+               - contentType: MIMEタイプ (例: "text/plain", "image/jpeg") (任意)
+
+         • オブジェクトアップロードの注意事項:
+               - content には、アップロードしたいファイルの絶対パスを指定してください
+               - ファイルは自動的に読み込まれ、Base64エンコードされてアップロードされます
+               - 5GB未満のファイルのみアップロード可能です
+               - 疑似ディレクトリを作成する場合は、パスに "/" を含めてください (例: "/v1/AUTH_{tenantId}/container/dir/file.txt")
+
+         • テナントIDは環境変数 OPENSTACK_TENANT_ID から自動的に取得されます
+
+         • 契約に紐づくサーバー管理用途にのみ使用可
+   `;
+
 export const conohaDeleteByParamDescription = `
    JA: ConoHa の 公開 API を利用してサーバー操作を行います。
    
-         • 引数 ‘path’ でアクセス先リソースを指定
+         • 引数 'path' でアクセス先リソースを指定
 
          • 利用可能パス: 
-               /servers                   (サーバー削除)
-               /os-keypairs               (SSHキーペア削除)
-               /v2.0/security-groups      (セキュリティグループ削除)
-               /v2.0/security-group-rules (セキュリティグループルール削除)
-               /volumes                   (ボリューム削除)
+               /servers                                     (サーバー削除)
+               /os-keypairs                                 (SSHキーペア削除)
+               /v2.0/security-groups                        (セキュリティグループ削除)
+               /v2.0/security-group-rules                   (セキュリティグループルール削除)
+               /volumes                                     (ボリューム削除)
+               /v1/AUTH_{tenantId}/{container}              (コンテナ削除)
+               /v1/AUTH_{tenantId}/{container}/{object}     (オブジェクト削除)
 
-         • 引数 ‘param’ で必要な値を指定
+         • 引数 'param' で必要な値を指定
                /servers: サーバーID
                /os-keypairs: SSHキーペア名
                /v2.0/security-groups: セキュリティグループID
                /v2.0/security-group-rules: セキュリティグループルールID
                /volumes: ボリュームID
+               /v1/AUTH_{tenantId}/{container}: コンテナのフルパス (例: "/v1/AUTH_テナントID/mycontainer")
+               /v1/AUTH_{tenantId}/{container}/{object}: オブジェクトのフルパス (例: "/v1/AUTH_テナントID/mycontainer/myfile.txt")
+
+         • オブジェクトストレージ関連パスでは、{tenantId}、{container}、{object} が実際の値に置換された完全なパスを指定してください
+               - テナントIDは環境変数から取得可能です
+               - コンテナ名とオブジェクト名は一覧取得で確認してください
 
          • 契約に紐づくサーバー管理用途にのみ使用可
    `;
@@ -268,3 +347,33 @@ export const encodeBase64Description = `
          • エンコードされた文字列はテキスト形式で返されます
          • 1文字以上10000文字以下のテキストを指定してください
 `;
+
+export const conohaHeadDescription = `
+   JA: ConoHa の 公開 API を利用してオブジェクトストレージのアカウント情報またはコンテナ詳細情報を取得します。
+
+         • 引数 'path' でアクセス先リソースを指定（{tenantId} は環境変数から自動取得されます）
+               アカウント情報取得: "/v1/AUTH_{tenantId}"
+               コンテナ詳細取得: "/v1/AUTH_{tenantId}/{コンテナ名}" (例: "/v1/AUTH_{tenantId}/mycontainer")
+
+         • アカウント情報取得時のレスポンスヘッダー:
+               - x-account-container-count: コンテナ数
+               - x-account-object-count: オブジェクト数
+               - x-account-bytes-used: 使用容量（バイト）
+               - x-account-bytes-used-actual: 実際の使用容量（バイト）
+               - x-account-meta-quota-bytes: クォータ容量（バイト）
+
+         • コンテナ詳細取得時のレスポンスヘッダー:
+               - x-container-object-count: コンテナ内のオブジェクト数
+               - x-container-bytes-used: コンテナの使用容量（バイト）
+               - x-container-bytes-used-actual: コンテナの実際の使用容量（バイト）
+               - x-timestamp: コンテナ作成時刻（UNIX時刻）
+               - x-storage-policy: ストレージポリシー
+               - x-storage-class: ストレージクラス
+               - last-modified: 最終更新日時
+
+         • 204 No Contentまたは200 OKが返されていても、レスポンスヘッダーは取得できています
+
+         • テナントIDは環境変数 OPENSTACK_TENANT_ID から自動的に取得されます
+
+         • 契約に紐づくサーバー管理用途にのみ使用可
+   `;

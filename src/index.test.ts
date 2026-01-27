@@ -20,6 +20,17 @@ const mockCreateVolume = vi.fn();
 const mockUpdateVolumeByParam = vi.fn();
 const mockDeleteVolumeByParam = vi.fn();
 
+const mockGetStorageContainerList = vi.fn();
+const mockGetStorageObjectList = vi.fn();
+const mockGetStorageObjectInfo = vi.fn();
+const mockGetStorageAccountInfo = vi.fn();
+const mockGetStorageContainerInfo = vi.fn();
+const mockSetPostStorageMetadata = vi.fn();
+const mockSetPutStorageMetadata = vi.fn();
+const mockUploadStorageObject = vi.fn();
+const mockDeleteStorageContainer = vi.fn();
+const mockDeleteStorageObject = vi.fn();
+
 const mockRegisterTool = vi.fn();
 const mockRegisterPrompt = vi.fn();
 const mockConnect = vi.fn();
@@ -60,6 +71,19 @@ vi.mock("./features/openstack/volume/volume-client", () => ({
 	deleteVolumeByParam: mockDeleteVolumeByParam,
 }));
 
+vi.mock("./features/openstack/storage/storage-client", () => ({
+	getStorageContainerList: mockGetStorageContainerList,
+	getStorageObjectList: mockGetStorageObjectList,
+	getStorageObjectInfo: mockGetStorageObjectInfo,
+	getStorageAccountInfo: mockGetStorageAccountInfo,
+	getStorageContainerInfo: mockGetStorageContainerInfo,
+	setPostStorageMetadata: mockSetPostStorageMetadata,
+	setPutStorageMetadata: mockSetPutStorageMetadata,
+	uploadStorageObject: mockUploadStorageObject,
+	deleteStorageContainer: mockDeleteStorageContainer,
+	deleteStorageObject: mockDeleteStorageObject,
+}));
+
 vi.mock("@modelcontextprotocol/sdk/server/mcp.js", () => ({
 	McpServer: mockMcpServer,
 }));
@@ -67,6 +91,8 @@ vi.mock("@modelcontextprotocol/sdk/server/mcp.js", () => ({
 vi.mock("@modelcontextprotocol/sdk/server/stdio.js", () => ({
 	StdioServerTransport: mockStdioServerTransport,
 }));
+
+vi.stubEnv("OPENSTACK_TENANT_ID", "test-tenant-id");
 
 describe("index", () => {
 	beforeEach(() => {
@@ -99,6 +125,19 @@ describe("index", () => {
 			expect(mockCreateVolume).toBeDefined();
 			expect(mockUpdateVolumeByParam).toBeDefined();
 			expect(mockDeleteVolumeByParam).toBeDefined();
+		});
+
+		it("storage client関数群が正常にモックされた状態である", () => {
+			expect(mockGetStorageContainerList).toBeDefined();
+			expect(mockGetStorageObjectList).toBeDefined();
+			expect(mockGetStorageObjectInfo).toBeDefined();
+			expect(mockGetStorageAccountInfo).toBeDefined();
+			expect(mockGetStorageContainerInfo).toBeDefined();
+			expect(mockSetPostStorageMetadata).toBeDefined();
+			expect(mockSetPutStorageMetadata).toBeDefined();
+			expect(mockUploadStorageObject).toBeDefined();
+			expect(mockDeleteStorageContainer).toBeDefined();
+			expect(mockDeleteStorageObject).toBeDefined();
 		});
 
 		it("MCP SDK関数群が正常にモックされた状態である", () => {
